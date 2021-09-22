@@ -1,14 +1,18 @@
 {
   "name": "angular-file-tree",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve -o",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
+  "author": {
+    "name": "Yuvraj Chauhan",
+    "email": "yuvrajchauhan3113@gmail.com"
+  },
   "dependencies": {
     "@angular/animations": "~12.2.0",
     "@angular/common": "~12.2.0",

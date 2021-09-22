@@ -1,0 +1,141 @@
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap");
+</style>
+
+<div class="root">
+  <div class="tree-container">
+    <div class="btn-container">
+      <button class="btn-root" (click)="showRootFolderInput = true">
+        Add folder to root
+      </button>
+      <button class="btn-root" (click)="loadTree()">Load tree with data</button>
+      <button class="btn-root" (click)="clearTree()">Clear tree</button>
+    </div>
+
+    <ng-template #treeTemplateRef let-treeData="treeData" let-parent="parent">
+      <ul class="node">
+        <li
+          (mouseenter)="treeData.isActive = true"
+          (mouseleave)="treeData.isActive = false"
+        >
+          <img
+            *ngIf="treeData.type === 'folder'"
+            src="/assets/icons/folder-open-regular.svg"
+            height="12"
+          />
+          <img
+            *ngIf="treeData.type === 'file'"
+            src="/assets/icons/file-regular.svg"
+            height="12"
+          />
+          <label class="node-label">
+            {{ treeData?.name }}
+          </label>
+
+          <button
+            *ngIf="treeData.isActive && treeData.type === 'folder'"
+            class="btn-action btn-item"
+            (click)="toggleTypeOptions(treeData.id)"
+          >
+            <i class="fas fa-plus"></i>
+          </button>
+          <button
+            *ngIf="treeData.isActive"
+            class="btn-action btn-item"
+            (click)="deleteNode(treeData, parent)"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+
+          <ng-template ngFor let-child [ngForOf]="treeData.children">
+            <ng-template
+              [ngTemplateOutlet]="treeTemplateRef"
+              [ngTemplateOutletContext]="{ treeData: child, parent: treeData }"
+            >
+            </ng-template>
+          </ng-template>
+          <ul
+            *ngIf="
+              showTypeOption &&
+              !showChildInput &&
+              selectedNodeId === treeData.id
+            "
+          >
+            <li>
+              <button
+                class="btn-action btn-secondary"
+                (click)="onNodeTypeClick('file')"
+              >
+                File
+              </button>
+              <button
+                class="btn-action btn-secondary"
+                (click)="onNodeTypeClick('folder')"
+              >
+                Folder
+              </button>
+            </li>
+          </ul>
+          <ul *ngIf="showChildInput && selectedNodeId === treeData.id">
+            <li class="folder-input-container">
+              <img
+                src="/assets/icons/folder-open-regular.svg"
+                height="14"
+                *ngIf="selectedNodeType === 'folder'"
+              />
+              <img
+                *ngIf="selectedNodeType === 'file'"
+                src="/assets/icons/file-regular.svg"
+                height="14"
+              />
+              <input
+                type="text"
+                style="margin-left: 5px"
+                [(ngModel)]="childNodeName"
+                autofocus
+              />
+              <button class="btn-action btn-check" (click)="addNode(treeData)">
+                <i class="fas fa-check"></i>
+              </button>
+              <button
+                class="btn-action btn-cancel"
+                (click)="cancelChildInput()"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </ng-template>
+
+    <div *ngIf="generatedData.length" class="treeview">
+      <ng-template ngFor let-root [ngForOf]="generatedData">
+        <ng-template
+          [ngTemplateOutlet]="treeTemplateRef"
+          [ngTemplateOutletContext]="{ treeData: root, parent: root }"
+        >
+        </ng-template>
+      </ng-template>
+    </div>
+
+    <div class="folder-input-container" *ngIf="showRootFolderInput">
+      <img src="/assets/icons/folder-open-regular.svg" height="14" />
+      <input
+        type="text"
+        style="margin-left: 5px"
+        [(ngModel)]="rootFolderName"
+        autofocus
+      />
+      <button class="btn-action btn-check" (click)="addRootFolder()">
+        <i class="fas fa-check"></i>
+      </button>
+      <button class="btn-action btn-cancel" (click)="cancelFolderInput()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div class="json-container">
+    <textarea readonly cols="15" rows="25" [(ngModel)]="jsonData"></textarea>
+  </div>
+</div>
